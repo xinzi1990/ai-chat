@@ -16,7 +16,8 @@
 .
 ├── apps/
 │   ├── frontend/     # Vite + React + shadcn/ui 前端应用
-│   └── backend/      # Node + Express + MySQL 后端服务
+│   └── backend/      # Node + Express + MySQL 后端服务，含本地 MySQL Docker Compose 配置与数据库示例
+├── .db/              # 本地 MySQL 数据目录，不进入版本管理
 ├── docs/             # 接口说明和项目文档
 ├── package.json      # 根目录脚本与 workspace 声明
 ├── pnpm-workspace.yaml
