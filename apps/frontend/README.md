@@ -7,16 +7,12 @@ Frontend subproject for the AI chat application.
 - Vite
 - React
 - TypeScript
-- Tailwind CSS
-- shadcn/ui-compatible component structure
+- Ant Design
 
 ## Key Files
 
-- `src/App.tsx`: placeholder page using the local shadcn-style `Button`.
-- `src/components/ui/button.tsx`: local Button component.
-- `src/lib/utils.ts`: shared `cn` utility for class merging.
-- `components.json`: shadcn/ui metadata and aliases.
-- `tailwind.config.ts`: Tailwind theme and shadcn CSS variable mapping.
+- `src/App.tsx`: placeholder page using Ant Design components.
+- `src/index.css`: base application styles and Ant Design reset import.
 
 ## Scripts
 

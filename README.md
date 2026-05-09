@@ -4,7 +4,7 @@ pnpm monorepo 示例工程，包含一个前端应用和一个后端服务。
 
 ## 目录
 
-- `apps/frontend`：Vite + React + TypeScript + shadcn/ui 前端占位应用。
+- `apps/frontend`：Vite + React + TypeScript + Ant Design 前端占位应用。
 - `apps/backend`：Node.js + Express + TypeScript + MySQL 后端占位服务。
 - `docs`：接口说明和项目文档。
 

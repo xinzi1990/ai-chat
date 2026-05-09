@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { Button, Space, Typography } from "antd";
 
 export default function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
-      <section className="flex max-w-md flex-col items-center gap-6 text-center">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight">AI Chat Frontend</h1>
-          <p className="text-sm text-muted-foreground">
+    <main className="app-shell">
+      <section className="app-panel">
+        <Space direction="vertical" size={16} align="center">
+          <Typography.Title level={1}>AI Chat Frontend</Typography.Title>
+          <Typography.Text type="secondary">
             Frontend placeholder for the Vite React app.
-          </p>
-        </div>
-        <Button type="button">shadcn/ui Button</Button>
+          </Typography.Text>
+          <Button type="primary">Ant Design Button</Button>
+        </Space>
       </section>
     </main>
   );
