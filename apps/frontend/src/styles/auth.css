@@ -1,0 +1,30 @@
+.auth-shell {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-panel {
+  width: min(100%, 420px);
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid #e8ecf3;
+  border-radius: 8px;
+  box-shadow: 0 14px 36px rgba(18, 35, 58, 0.08);
+}
+
+.auth-panel--center {
+  text-align: center;
+}
+
+.auth-panel h1.ant-typography {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.auth-panel .ant-typography-secondary {
+  display: block;
+  text-align: center;
+}
