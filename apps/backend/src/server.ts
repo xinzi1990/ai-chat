@@ -1,13 +1,18 @@
-import "dotenv/config";
+import "./config/env.js";
 
 import express from "express";
 
+import { authRouter } from "./auth/auth.routes.js";
 import { mysqlPool } from "./db/pool.js";
+import { corsMiddleware } from "./http/cors.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3001);
 
+app.use(corsMiddleware);
 app.use(express.json());
+
+app.use("/api/auth", authRouter);
 
 app.get("/health", (_request, response) => {
   response.json({

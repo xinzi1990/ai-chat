@@ -1,6 +1,6 @@
 # API 接口说明
 
-本文档记录后端服务的接口约定。当前后端已实现健康检查接口，用户认证接口为待实现设计。
+本文档记录后端服务的接口约定。当前后端已实现健康检查接口和用户认证接口。
 
 ## 基础信息
 
@@ -263,5 +263,6 @@ Authorization: Bearer <token>
 | `MYSQL_CONNECTION_LIMIT` | `10`                        | MySQL 连接池上限                |
 | `JWT_SECRET`             | `replace-with-local-secret` | JWT 签名密钥                    |
 | `JWT_EXPIRES_IN_DAYS`    | `7`                         | JWT 有效天数                    |
+| `CORS_ORIGINS`           | `http://localhost:5173`     | 允许跨域访问的前端 Origin       |
 
 本地开发数据库可使用 `apps/backend/docker-dev-compose.yml` 启动，Compose 配置通过变量插值读取 `apps/backend/.env.example`。
