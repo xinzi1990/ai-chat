@@ -1,10 +1,10 @@
 import { Router } from "express";
 
 import {
-  loginController,
-  logoutController,
-  meController,
-  registerController
+    loginController,
+    logoutController,
+    meController,
+    registerController
 } from "./auth.controller.js";
 import { requireAuth } from "./auth.middleware.js";
 

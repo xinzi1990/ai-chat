@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Chat API 文档预览</title>
+    <style>
+        :root {
+            color-scheme: light; --bg: #f6f8fb; --panel: #ffffff; --text: #172033;
+            --muted: #5f6b7a; --line: #d9e1ec; --brand: #1b6ef3;
+            --brand-soft: #e8f0ff; --code: #f1f4f8;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text); background: var(--bg);
+        }
+
+        header { background: var(--panel); border-bottom: 1px solid var(--line); }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .top {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 24px; padding: 32px 0 28px;
+        }
+
+        h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.2; }
+        h2 { margin: 0 0 14px; font-size: 20px; }
+        h3 { margin: 16px 0 10px; font-size: 16px; }
+        p { margin: 0; color: var(--muted); line-height: 1.7; }
+        main { padding: 28px 0 44px; }
+        .page { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; }
+        .toc {
+            position: sticky; top: 18px; padding: 18px; background: var(--panel);
+            border: 1px solid var(--line); border-radius: 8px;
+        }
+        .toc strong { display: block; margin-bottom: 12px; font-size: 15px; }
+        .toc a {
+            display: block; padding: 9px 10px; border-radius: 6px; color: var(--muted);
+            text-decoration: none; font-size: 14px;
+        }
+        .toc a:hover { background: var(--brand-soft); color: var(--brand); }
+        .grid, .routes { display: grid; gap: 16px; }
+        .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .routes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+        .card, section {
+            background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+        }
+        .card { display: block; min-height: 150px; padding: 20px; text-decoration: none; color: inherit; }
+        .card:hover { border-color: var(--brand); box-shadow: 0 10px 24px rgba(27, 110, 243, 0.08); }
+        .card h2 { margin-top: 16px; }
+        .badge {
+            display: inline-flex; align-items: center; height: 26px; padding: 0 10px;
+            border-radius: 999px; background: var(--brand-soft); color: var(--brand);
+            font-size: 13px; font-weight: 600;
+        }
+        section { margin-top: 18px; padding: 22px; scroll-margin-top: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; overflow: hidden; }
+        th, td {
+            border: 1px solid var(--line); padding: 10px 12px; text-align: left;
+            vertical-align: top; line-height: 1.5;
+        }
+        th { background: #eef3f9; font-weight: 700; }
+        code {
+            padding: 2px 6px; border-radius: 5px; background: var(--code);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em;
+        }
+        ul { margin: 10px 0 0; padding-left: 20px; color: var(--muted); line-height: 1.8; }
+        .route { padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+        .method { display: inline-block; min-width: 58px; margin-right: 8px; color: var(--brand); font-weight: 700; }
+        .foot { margin-top: 18px; font-size: 14px; }
+
+        @media (max-width: 860px) {
+            .top, .page, .grid, .routes { grid-template-columns: 1fr; display: grid; }
+            .wrap { width: min(100% - 28px, 1120px); }
+            .toc { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap top">
+            <div>
+                <h1>AI Chat API 文档预览</h1>
+                <p>总文档负责统一规范，业务接口按认证和 AI 聊天模块拆分维护。</p>
+            </div>
+            <span class="badge">静态预览</span>
+        </div>
+    </header>
+
+    <main class="wrap page">
+        <aside class="toc" aria-label="页面目录">
+            <strong>目录</strong>
+            <a href="#documents">文档入口</a>
+            <a href="#response">统一响应格式</a>
+            <a href="#auth">认证约定</a>
+            <a href="#routes">接口摘要</a>
+        </aside>
+
+        <div class="content">
+        <div id="documents" class="grid">
+            <a class="card" href="./API-DOC.html">
+                <span class="badge">总览</span>
+                <h2>API-DOC.html</h2>
+                <p>基础信息、统一响应格式、JWT 认证约定、通用错误码和业务文档入口。原文见 API-DOC.md。</p>
+            </a>
+            <a class="card" href="./api/auth.html">
+                <span class="badge">认证</span>
+                <h2>api/auth.html</h2>
+                <p>用户注册、登录、恢复当前用户和退出登录接口。原文见 api/auth.md。</p>
+            </a>
+            <a class="card" href="./api/chat.html">
+                <span class="badge">聊天</span>
+                <h2>api/chat.html</h2>
+                <p>聊天会话、历史消息、发送消息和 AI 回复失败场景。原文见 api/chat.md。</p>
+            </a>
+        </div>
+
+        <section id="response">
+            <h2>统一响应格式</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>场景</th>
+                        <th>格式</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>成功响应</td>
+                        <td><code>{ "data": {}, "error": null }</code></td>
+                    </tr>
+                    <tr>
+                        <td>错误响应</td>
+                        <td><code>{ "data": null, "error": { "code": "ERROR_CODE", "message": "错误说明" } }</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="auth">
+            <h2>认证约定</h2>
+            <p>需要登录态的接口统一通过请求头传递 JWT。</p>
+            <h3>请求头</h3>
+            <p><code>Authorization: Bearer &lt;token&gt;</code></p>
+            <h3>JWT 校验</h3>
+            <ul>
+                <li>JWT 签名有效。</li>
+                <li>JWT 未过期。</li>
+                <li><code>jti</code> 未被吊销。</li>
+                <li>用户状态为 <code>active</code>。</li>
+            </ul>
+        </section>
+
+        <section id="routes">
+            <h2>接口摘要</h2>
+            <div class="routes">
+                <div class="route"><span class="method">POST</span><code>/api/auth/register</code></div>
+                <div class="route"><span class="method">POST</span><code>/api/auth/login</code></div>
+                <div class="route"><span class="method">GET</span><code>/api/auth/me</code></div>
+                <div class="route"><span class="method">POST</span><code>/api/auth/logout</code></div>
+                <div class="route"><span class="method">GET</span><code>/api/chat/sessions</code></div>
+                <div class="route"><span class="method">POST</span><code>/api/chat/sessions</code></div>
+                <div class="route"><span class="method">PATCH</span><code>/api/chat/sessions/:sessionId</code></div>
+                <div class="route"><span class="method">DELETE</span><code>/api/chat/sessions/:sessionId</code></div>
+                <div class="route"><span class="method">GET</span><code>/api/chat/sessions/:sessionId/messages</code></div>
+                <div class="route"><span class="method">POST</span><code>/api/chat/messages</code> <span class="badge">SSE</span></div>
+            </div>
+            <p class="foot">完整请求体、响应体和错误码以 Markdown 业务文档为准。</p>
+        </section>
+        </div>
+    </main>
+</body>
+</html>

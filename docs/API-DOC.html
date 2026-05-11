@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API 接口总览</title>
+    <style>
+        :root { --bg: #f6f8fb; --panel: #fff; --text: #172033; --muted: #5f6b7a; --line: #d9e1ec; --brand: #1b6ef3; --soft: #e8f0ff; --code: #f1f4f8; }
+        * { box-sizing: border-box; } html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+        header { background: var(--panel); border-bottom: 1px solid var(--line); }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .top { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0; }
+        h1 { margin: 0 0 8px; font-size: 30px; } h2 { margin: 0 0 14px; font-size: 21px; } h3 { margin: 18px 0 10px; font-size: 16px; }
+        p { margin: 0; color: var(--muted); line-height: 1.7; }
+        a { color: var(--brand); text-decoration: none; }
+        main { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 18px; padding: 28px 0 44px; }
+        nav, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+        nav { position: sticky; top: 18px; padding: 16px; align-self: start; }
+        nav strong { display: block; margin-bottom: 10px; } nav a { display: block; padding: 8px 10px; border-radius: 6px; color: var(--muted); font-size: 14px; }
+        nav a:hover { background: var(--soft); color: var(--brand); }
+        section { padding: 22px; margin-bottom: 18px; scroll-margin-top: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; line-height: 1.5; }
+        th { background: #eef3f9; } code { padding: 2px 6px; border-radius: 5px; background: var(--code); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        pre { overflow: auto; padding: 14px; border-radius: 8px; background: #111827; color: #edf2f7; line-height: 1.6; }
+        pre code { padding: 0; background: transparent; color: inherit; }
+        ul { margin: 10px 0 0; padding-left: 20px; color: var(--muted); line-height: 1.8; }
+        .badge { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--soft); color: var(--brand); font-size: 13px; font-weight: 600; }
+        .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .doc-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+        .doc-link { display: block; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+        @media (max-width: 820px) { .top, main, .doc-links { display: grid; grid-template-columns: 1fr; } nav { position: static; } .wrap { width: min(100% - 28px, 1120px); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap top">
+            <div>
+                <h1>API 接口总览</h1>
+                <p>后端服务的全局 API 约定。具体业务接口按模块拆分到独立文档中。</p>
+            </div>
+            <div class="actions">
+                <a class="badge" href="./api-preview.html">返回文档预览</a>
+                <a class="badge" href="./API-DOC.md">Markdown 原文</a>
+            </div>
+        </div>
+    </header>
+    <main class="wrap">
+        <nav aria-label="页面目录">
+            <strong>目录</strong>
+            <a href="#base">基础信息</a>
+            <a href="#documents">业务接口文档</a>
+            <a href="#response">通用响应格式</a>
+            <a href="#auth">认证约定</a>
+            <a href="#errors">通用错误码</a>
+            <a href="#env">环境变量</a>
+        </nav>
+        <div>
+            <section id="base">
+                <h2>基础信息</h2>
+                <table>
+                    <tr><th>项目</th><th>说明</th></tr>
+                    <tr><td>服务目录</td><td><code>apps/backend</code></td></tr>
+                    <tr><td>默认端口</td><td><code>3001</code></td></tr>
+                    <tr><td>默认地址</td><td><code>http://localhost:3001</code></td></tr>
+                    <tr><td>请求格式</td><td><code>application/json</code></td></tr>
+                    <tr><td>响应格式</td><td><code>application/json</code></td></tr>
+                </table>
+            </section>
+            <section id="documents">
+                <h2>业务接口文档</h2>
+                <div class="doc-links">
+                    <a class="doc-link" href="./api/auth.html"><strong>用户认证接口</strong><br />注册、登录、恢复当前用户和退出登录。</a>
+                    <a class="doc-link" href="./api/chat.html"><strong>AI 聊天接口</strong><br />聊天会话、历史消息和 SSE 发送消息接口设计。</a>
+                </div>
+            </section>
+            <section id="response">
+                <h2>通用响应格式</h2>
+                <h3>成功响应</h3>
+                <pre><code>{
+  "data": {},
+  "error": null
+}</code></pre>
+                <h3>错误响应</h3>
+                <pre><code>{
+  "data": null,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "错误说明"
+  }
+}</code></pre>
+            </section>
+            <section id="auth">
+                <h2>认证约定</h2>
+                <p>用户系统使用单个 JWT 作为登录凭证。客户端在需要认证的接口中通过请求头传递 token。</p>
+                <h3>请求头</h3>
+                <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+                <h3>JWT Payload</h3>
+                <table>
+                    <tr><th>字段</th><th>说明</th></tr>
+                    <tr><td><code>sub</code></td><td>用户 ID</td></tr>
+                    <tr><td><code>username</code></td><td>用户名</td></tr>
+                    <tr><td><code>jti</code></td><td>JWT 唯一 ID，用于退出登录后的服务端吊销</td></tr>
+                    <tr><td><code>iat</code></td><td>签发时间</td></tr>
+                    <tr><td><code>exp</code></td><td>过期时间</td></tr>
+                </table>
+                <ul>
+                    <li>JWT 签名有效。</li>
+                    <li>JWT 未过期。</li>
+                    <li><code>jti</code> 未被吊销。</li>
+                    <li>用户状态为 <code>active</code>。</li>
+                </ul>
+            </section>
+            <section id="errors">
+                <h2>通用错误码</h2>
+                <table>
+                    <tr><th>错误码</th><th>说明</th></tr>
+                    <tr><td><code>INVALID_REQUEST</code></td><td>请求参数不合法</td></tr>
+                    <tr><td><code>UNAUTHORIZED</code></td><td>未登录或 token 无效</td></tr>
+                    <tr><td><code>USER_DISABLED</code></td><td>用户已被禁用</td></tr>
+                    <tr><td><code>INTERNAL_ERROR</code></td><td>服务内部错误</td></tr>
+                </table>
+                <p>业务模块专属错误码在对应业务接口文档中说明。</p>
+            </section>
+            <section id="env">
+                <h2>环境变量</h2>
+                <table>
+                    <tr><th>变量</th><th>开发环境推荐值</th><th>说明</th></tr>
+                    <tr><td><code>PORT</code></td><td><code>3001</code></td><td>HTTP 服务端口</td></tr>
+                    <tr><td><code>MYSQL_HOST</code></td><td><code>localhost</code></td><td>MySQL 主机</td></tr>
+                    <tr><td><code>MYSQL_PORT</code></td><td><code>3307</code></td><td>MySQL 端口</td></tr>
+                    <tr><td><code>MYSQL_ROOT_PASSWORD</code></td><td><code>root</code></td><td>MySQL Root 密码，仅用于本地开发</td></tr>
+                    <tr><td><code>MYSQL_USER</code></td><td><code>ai_chat</code></td><td>MySQL 用户</td></tr>
+                    <tr><td><code>MYSQL_PASSWORD</code></td><td><code>123456</code></td><td>MySQL 密码</td></tr>
+                    <tr><td><code>MYSQL_DATABASE</code></td><td><code>demo</code></td><td>MySQL 数据库名</td></tr>
+                    <tr><td><code>MYSQL_CONNECTION_LIMIT</code></td><td><code>10</code></td><td>MySQL 连接池上限</td></tr>
+                    <tr><td><code>JWT_SECRET</code></td><td><code>replace-with-local-secret</code></td><td>JWT 签名密钥</td></tr>
+                    <tr><td><code>JWT_EXPIRES_IN_DAYS</code></td><td><code>7</code></td><td>JWT 有效天数</td></tr>
+                    <tr><td><code>CORS_ORIGINS</code></td><td><code>http://localhost:5173</code></td><td>允许跨域访问的前端 Origin</td></tr>
+                    <tr><td><code>AI_PROVIDER</code></td><td><code>openai</code></td><td>AI 回复提供方，可选 <code>openai</code> 或 <code>stub</code></td></tr>
+                    <tr><td><code>OPENAI_API_KEY</code></td><td>空</td><td>OpenAI API Key</td></tr>
+                    <tr><td><code>OPENAI_MODEL</code></td><td><code>gpt-4.1-mini</code></td><td>OpenAI 模型名称</td></tr>
+                    <tr><td><code>OPENAI_BASE_URL</code></td><td>空</td><td>可选 OpenAI 兼容接口地址</td></tr>
+                </table>
+                <p>本地开发数据库可使用 <code>apps/backend/docker-dev-compose.yml</code> 启动。</p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

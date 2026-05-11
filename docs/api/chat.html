@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI 聊天接口</title>
+    <style>
+        :root { --bg: #f6f8fb; --panel: #fff; --text: #172033; --muted: #5f6b7a; --line: #d9e1ec; --brand: #1b6ef3; --soft: #e8f0ff; --code: #f1f4f8; }
+        * { box-sizing: border-box; } html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+        header { background: var(--panel); border-bottom: 1px solid var(--line); }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .top { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0; }
+        h1 { margin: 0 0 8px; font-size: 30px; } h2 { margin: 0 0 14px; font-size: 21px; } h3 { margin: 18px 0 10px; font-size: 16px; }
+        p { margin: 0; color: var(--muted); line-height: 1.7; }
+        a { color: var(--brand); text-decoration: none; }
+        main { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 18px; padding: 28px 0 44px; }
+        nav, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+        nav { position: sticky; top: 18px; padding: 16px; align-self: start; }
+        nav strong { display: block; margin-bottom: 10px; } nav a { display: block; padding: 8px 10px; border-radius: 6px; color: var(--muted); font-size: 14px; }
+        nav a:hover, nav a.active { background: var(--soft); color: var(--brand); font-weight: 700; }
+        section { padding: 22px; margin-bottom: 18px; scroll-margin-top: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; line-height: 1.5; }
+        th { background: #eef3f9; } code { padding: 2px 6px; border-radius: 5px; background: var(--code); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        pre { overflow: auto; padding: 14px; border-radius: 8px; background: #111827; color: #edf2f7; line-height: 1.6; }
+        pre code { padding: 0; background: transparent; color: inherit; }
+        .badge { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--soft); color: var(--brand); font-size: 13px; font-weight: 600; }
+        .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .endpoint { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+        .method { min-width: 58px; color: var(--brand); font-weight: 700; }
+        @media (max-width: 820px) { .top, main { display: grid; grid-template-columns: 1fr; } nav { position: static; } .wrap { width: min(100% - 28px, 1120px); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap top">
+            <div>
+                <h1>AI 聊天接口</h1>
+                <p>聊天会话、历史消息和发送消息接口。通用规范见 <a href="../API-DOC.md">API 接口总览</a>。</p>
+            </div>
+            <div class="actions">
+                <a class="badge" href="../api-preview.html">返回文档预览</a>
+                <a class="badge" href="./chat.md">Markdown 原文</a>
+            </div>
+        </div>
+    </header>
+    <main class="wrap">
+        <nav aria-label="页面目录">
+            <strong>接口目录</strong>
+            <a href="#sessions">会话列表</a>
+            <a href="#create-session">创建会话</a>
+            <a href="#update-session">更新会话</a>
+            <a href="#delete-session">删除会话</a>
+            <a href="#messages">历史消息</a>
+            <a href="#send">发送消息</a>
+        </nav>
+        <div>
+            <section id="errors">
+                <h2>业务错误码</h2>
+                <table>
+                    <tr><th>错误码</th><th>说明</th></tr>
+                    <tr><td><code>CHAT_SESSION_NOT_FOUND</code></td><td>聊天会话不存在或无权访问</td></tr>
+                    <tr><td><code>CHAT_SESSION_ARCHIVED</code></td><td>聊天会话已归档，不能继续发送消息</td></tr>
+                    <tr><td><code>MESSAGE_TOO_LONG</code></td><td>消息内容超过长度限制</td></tr>
+                    <tr><td><code>AI_RESPONSE_FAILED</code></td><td>AI 回复生成失败</td></tr>
+                </table>
+            </section>
+            <section id="models">
+                <h2>领域模型</h2>
+                <h3>chat_sessions</h3>
+                <table>
+                    <tr><th>字段</th><th>类型建议</th><th>说明</th></tr>
+                    <tr><td><code>id</code></td><td><code>BIGINT UNSIGNED</code></td><td>会话 ID</td></tr>
+                    <tr><td><code>user_id</code></td><td><code>BIGINT UNSIGNED</code></td><td>所属用户 ID</td></tr>
+                    <tr><td><code>title</code></td><td><code>VARCHAR(120)</code></td><td>会话标题，可由首条消息生成</td></tr>
+                    <tr><td><code>status</code></td><td><code>ENUM('active', 'archived')</code></td><td>会话状态</td></tr>
+                    <tr><td><code>last_message_at</code></td><td><code>DATETIME NULL</code></td><td>最近一条消息时间</td></tr>
+                    <tr><td><code>created_at</code></td><td><code>DATETIME</code></td><td>创建时间</td></tr>
+                    <tr><td><code>updated_at</code></td><td><code>DATETIME</code></td><td>更新时间</td></tr>
+                </table>
+                <h3>chat_messages</h3>
+                <table>
+                    <tr><th>字段</th><th>类型建议</th><th>说明</th></tr>
+                    <tr><td><code>id</code></td><td><code>BIGINT UNSIGNED</code></td><td>消息 ID</td></tr>
+                    <tr><td><code>session_id</code></td><td><code>BIGINT UNSIGNED</code></td><td>所属会话 ID</td></tr>
+                    <tr><td><code>user_id</code></td><td><code>BIGINT UNSIGNED</code></td><td>所属用户 ID</td></tr>
+                    <tr><td><code>role</code></td><td><code>ENUM('user', 'assistant')</code></td><td>消息角色</td></tr>
+                    <tr><td><code>content</code></td><td><code>MEDIUMTEXT</code></td><td>消息正文</td></tr>
+                    <tr><td><code>status</code></td><td><code>ENUM('completed', 'failed')</code></td><td>消息状态</td></tr>
+                    <tr><td><code>sequence_no</code></td><td><code>INT UNSIGNED</code></td><td>会话内递增序号</td></tr>
+                    <tr><td><code>model</code></td><td><code>VARCHAR(64) NULL</code></td><td>AI 回复使用的模型</td></tr>
+                    <tr><td><code>prompt_tokens</code></td><td><code>INT UNSIGNED NULL</code></td><td>输入 token 数</td></tr>
+                    <tr><td><code>completion_tokens</code></td><td><code>INT UNSIGNED NULL</code></td><td>输出 token 数</td></tr>
+                    <tr><td><code>error_message</code></td><td><code>VARCHAR(500) NULL</code></td><td>AI 回复失败原因</td></tr>
+                    <tr><td><code>created_at</code></td><td><code>DATETIME</code></td><td>创建时间</td></tr>
+                </table>
+            </section>
+            <section id="structures">
+                <h2>通用数据结构</h2>
+                <h3>ChatSession</h3>
+                <pre><code>{ "id": "1", "title": "帮我设计登录页面", "status": "active", "lastMessageAt": "2026-05-11T10:20:30.000Z", "createdAt": "2026-05-11T10:10:00.000Z", "updatedAt": "2026-05-11T10:20:30.000Z" }</code></pre>
+                <h3>ChatMessage</h3>
+                <pre><code>{ "id": "1", "sessionId": "1", "role": "user", "content": "帮我设计一个登录页面", "status": "completed", "sequenceNo": 1, "model": null, "promptTokens": null, "completionTokens": null, "errorMessage": null, "createdAt": "2026-05-11T10:10:00.000Z" }</code></pre>
+            </section>
+            <section id="sessions">
+                <div class="endpoint"><span class="method">GET</span><code>/api/chat/sessions</code></div>
+                <p>查询当前用户的聊天会话列表，默认按 <code>lastMessageAt</code> 倒序排列。</p>
+                <h3>查询参数</h3>
+                <table><tr><th>参数</th><th>类型</th><th>默认值</th><th>说明</th></tr><tr><td><code>status</code></td><td>string</td><td>active</td><td>active、archived</td></tr><tr><td><code>page</code></td><td>number</td><td>1</td><td>页码</td></tr><tr><td><code>pageSize</code></td><td>number</td><td>20</td><td>最大 50</td></tr></table>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "items": [ChatSession], "page": 1, "pageSize": 20, "total": 1 }, "error": null }</code></pre>
+            </section>
+            <section id="create-session">
+                <div class="endpoint"><span class="method">POST</span><code>/api/chat/sessions</code></div>
+                <p>创建一个空聊天会话。也可以直接通过发送首条消息自动创建会话。</p>
+                <h3>请求体</h3>
+                <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>title</code></td><td>string</td><td>否</td><td>会话标题</td></tr></table>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "session": ChatSession }, "error": null }</code></pre>
+            </section>
+            <section id="update-session">
+                <div class="endpoint"><span class="method">PATCH</span><code>/api/chat/sessions/:sessionId</code></div>
+                <p>更新当前用户的聊天会话。首版支持修改标题和归档状态。</p>
+                <h3>请求体</h3>
+                <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>title</code></td><td>string</td><td>否</td><td>新会话标题</td></tr><tr><td><code>status</code></td><td>string</td><td>否</td><td>active、archived</td></tr></table>
+            </section>
+            <section id="delete-session">
+                <div class="endpoint"><span class="method">DELETE</span><code>/api/chat/sessions/:sessionId</code></div>
+                <p>删除当前用户的聊天会话，并同时删除该会话下的历史消息。只想隐藏会话时，应改用归档状态。</p>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "success": true }, "error": null }</code></pre>
+                <h3>错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>400</td><td><code>INVALID_REQUEST</code></td><td>请求参数不合法</td></tr><tr><td>401</td><td><code>UNAUTHORIZED</code></td><td>未登录或 token 无效</td></tr><tr><td>403</td><td><code>USER_DISABLED</code></td><td>用户已被禁用</td></tr><tr><td>404</td><td><code>CHAT_SESSION_NOT_FOUND</code></td><td>会话不存在或不属于当前用户</td></tr></table>
+            </section>
+            <section id="messages">
+                <div class="endpoint"><span class="method">GET</span><code>/api/chat/sessions/:sessionId/messages</code></div>
+                <p>查询当前用户指定会话的历史消息，默认按 <code>sequenceNo</code> 升序排列。</p>
+                <h3>查询参数</h3>
+                <table><tr><th>参数</th><th>类型</th><th>默认值</th><th>说明</th></tr><tr><td><code>afterSequenceNo</code></td><td>number</td><td>无</td><td>只查询该序号之后的消息</td></tr><tr><td><code>limit</code></td><td>number</td><td>50</td><td>最大 100</td></tr></table>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "session": ChatSession, "items": [ChatMessage], "hasMore": false }, "error": null }</code></pre>
+            </section>
+            <section id="send">
+                <div class="endpoint"><span class="method">POST</span><code>/api/chat/messages</code></div>
+                <p>发送用户消息并通过 SSE 流式生成 AI 回复。<code>sessionId</code> 为空时服务端自动创建新会话。</p>
+                <h3>请求体</h3>
+                <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>sessionId</code></td><td>string</td><td>否</td><td>会话 ID</td></tr><tr><td><code>content</code></td><td>string</td><td>是</td><td>用户消息内容，最大 4000 字符</td></tr></table>
+                <h3>SSE 响应头</h3>
+                <pre><code>HTTP/1.1 200 OK
+Content-Type: text/event-stream; charset=utf-8
+Cache-Control: no-cache
+Connection: keep-alive</code></pre>
+                <h3>SSE 事件</h3>
+                <table><tr><th>事件名</th><th>说明</th></tr><tr><td><code>session</code></td><td>会话信息</td></tr><tr><td><code>user_message</code></td><td>已保存的用户消息</td></tr><tr><td><code>assistant_delta</code></td><td>AI 回复增量文本</td></tr><tr><td><code>assistant_message</code></td><td>已保存的完整 AI 回复消息</td></tr><tr><td><code>done</code></td><td>本次回复结束</td></tr><tr><td><code>error</code></td><td>AI 回复生成失败</td></tr></table>
+                <h3>SSE 成功响应示例</h3>
+                <pre><code>event: session
+data: {"id":"1","title":"帮我设计一个登录页面","status":"active"}
+
+event: user_message
+data: {"id":"1","sessionId":"1","role":"user","content":"帮我设计一个登录页面","status":"completed","sequenceNo":1}
+
+event: assistant_delta
+data: {"content":"可以，"}
+
+event: assistant_delta
+data: {"content":"先确认登录方式和目标用户。"}
+
+event: assistant_message
+data: {"id":"2","sessionId":"1","role":"assistant","content":"可以，先确认登录方式和目标用户。","status":"completed","sequenceNo":2}
+
+event: done
+data: {"success":true}</code></pre>
+                <h3>SSE 失败响应示例</h3>
+                <pre><code>event: error
+data: {"code":"AI_RESPONSE_FAILED","message":"AI 回复生成失败","assistantMessage":{"id":"2","status":"failed","errorMessage":"AI response failed"}}</code></pre>
+                <h3>进入 SSE 前的错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>400</td><td><code>INVALID_REQUEST</code></td><td>请求参数不合法</td></tr><tr><td>400</td><td><code>MESSAGE_TOO_LONG</code></td><td>消息内容超过长度限制</td></tr><tr><td>401</td><td><code>UNAUTHORIZED</code></td><td>未登录或 token 无效</td></tr><tr><td>403</td><td><code>USER_DISABLED</code></td><td>用户已被禁用</td></tr><tr><td>404</td><td><code>CHAT_SESSION_NOT_FOUND</code></td><td>会话不存在或不属于当前用户</td></tr><tr><td>409</td><td><code>CHAT_SESSION_ARCHIVED</code></td><td>会话已归档，不能继续发送消息</td></tr></table>
+            </section>
+        </div>
+    </main>
+    <script>
+        const links = [...document.querySelectorAll("nav a[href^='#']")];
+        const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+        const setActive = (id) => {
+            links.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${id}`));
+        };
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries.filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) setActive(visible.target.id);
+        }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.3, 0.6] });
+        sections.forEach((section) => observer.observe(section));
+        setActive(sections[0]?.id);
+    </script>
+</body>
+</html>

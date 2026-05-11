@@ -1,7 +1,8 @@
 # Frontend
 
 Frontend subproject for the AI chat application. It provides the username and
-password authentication UI described in `../../docs/API-DOC.md`.
+password authentication UI described in `../../docs/api/auth.md`, including
+confirm-password validation on registration.
 
 ## Stack
 
@@ -38,4 +39,5 @@ password authentication UI described in `../../docs/API-DOC.md`.
 - `pnpm build`: type-check and build the app.
 - `pnpm preview`: preview the production build.
 - `pnpm typecheck`: run TypeScript checks.
-- `pnpm lint`: run TypeScript checks as the current placeholder lint.
+- `pnpm lint`: run ESLint with the root flat config.
+- `pnpm lint:fix`: run ESLint auto-fix, including 4-space indentation fixes.

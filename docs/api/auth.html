@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>用户认证接口</title>
+    <style>
+        :root { --bg: #f6f8fb; --panel: #fff; --text: #172033; --muted: #5f6b7a; --line: #d9e1ec; --brand: #1b6ef3; --soft: #e8f0ff; --code: #f1f4f8; }
+        * { box-sizing: border-box; } html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+        header { background: var(--panel); border-bottom: 1px solid var(--line); }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .top { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0; }
+        h1 { margin: 0 0 8px; font-size: 30px; } h2 { margin: 0 0 14px; font-size: 21px; } h3 { margin: 18px 0 10px; font-size: 16px; }
+        p { margin: 0; color: var(--muted); line-height: 1.7; }
+        a { color: var(--brand); text-decoration: none; }
+        main { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 18px; padding: 28px 0 44px; }
+        nav, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+        nav { position: sticky; top: 18px; padding: 16px; align-self: start; }
+        nav strong { display: block; margin-bottom: 10px; } nav a { display: block; padding: 8px 10px; border-radius: 6px; color: var(--muted); font-size: 14px; }
+        nav a:hover, nav a.active { background: var(--soft); color: var(--brand); font-weight: 700; }
+        section { padding: 22px; margin-bottom: 18px; scroll-margin-top: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; line-height: 1.5; }
+        th { background: #eef3f9; } code { padding: 2px 6px; border-radius: 5px; background: var(--code); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        pre { overflow: auto; padding: 14px; border-radius: 8px; background: #111827; color: #edf2f7; line-height: 1.6; }
+        pre code { padding: 0; background: transparent; color: inherit; }
+        .badge { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--soft); color: var(--brand); font-size: 13px; font-weight: 600; }
+        .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .endpoint { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+        .method { min-width: 58px; color: var(--brand); font-weight: 700; }
+        @media (max-width: 820px) { .top, main { display: grid; grid-template-columns: 1fr; } nav { position: static; } .wrap { width: min(100% - 28px, 1120px); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap top">
+            <div>
+                <h1>用户认证接口</h1>
+                <p>注册、登录、恢复当前用户和退出登录。通用规范见 <a href="../API-DOC.md">API 接口总览</a>。</p>
+            </div>
+            <div class="actions">
+                <a class="badge" href="../api-preview.html">返回文档预览</a>
+                <a class="badge" href="./auth.md">Markdown 原文</a>
+            </div>
+        </div>
+    </header>
+    <main class="wrap">
+        <nav aria-label="页面目录">
+            <strong>接口目录</strong>
+            <a href="#register">注册</a>
+            <a href="#login">登录</a>
+            <a href="#me">恢复用户</a>
+            <a href="#logout">退出登录</a>
+        </nav>
+        <div>
+            <section id="errors">
+                <h2>业务错误码</h2>
+                <table>
+                    <tr><th>错误码</th><th>说明</th></tr>
+                    <tr><td><code>USERNAME_EXISTS</code></td><td>用户名已存在</td></tr>
+                    <tr><td><code>INVALID_CREDENTIALS</code></td><td>用户名或密码错误</td></tr>
+                </table>
+            </section>
+            <section id="models">
+                <h2>领域模型</h2>
+                <h3>users</h3>
+                <table>
+                    <tr><th>字段</th><th>类型建议</th><th>说明</th></tr>
+                    <tr><td><code>id</code></td><td><code>BIGINT UNSIGNED</code></td><td>用户 ID</td></tr>
+                    <tr><td><code>username</code></td><td><code>VARCHAR(64)</code></td><td>用户名，唯一，用于登录</td></tr>
+                    <tr><td><code>password_hash</code></td><td><code>VARCHAR(255)</code></td><td>密码哈希，不保存明文密码</td></tr>
+                    <tr><td><code>status</code></td><td><code>ENUM('active', 'disabled')</code></td><td>用户状态</td></tr>
+                    <tr><td><code>created_at</code></td><td><code>DATETIME</code></td><td>创建时间</td></tr>
+                    <tr><td><code>updated_at</code></td><td><code>DATETIME</code></td><td>更新时间</td></tr>
+                </table>
+                <h3>revoked_tokens</h3>
+                <table>
+                    <tr><th>字段</th><th>类型建议</th><th>说明</th></tr>
+                    <tr><td><code>id</code></td><td><code>BIGINT UNSIGNED</code></td><td>记录 ID</td></tr>
+                    <tr><td><code>jti</code></td><td><code>VARCHAR(64)</code></td><td>JWT 唯一 ID，唯一</td></tr>
+                    <tr><td><code>user_id</code></td><td><code>BIGINT UNSIGNED</code></td><td>用户 ID</td></tr>
+                    <tr><td><code>expires_at</code></td><td><code>DATETIME</code></td><td>JWT 原始过期时间</td></tr>
+                    <tr><td><code>revoked_at</code></td><td><code>DATETIME</code></td><td>吊销时间</td></tr>
+                </table>
+            </section>
+            <section id="register">
+                <div class="endpoint"><span class="method">POST</span><code>/api/auth/register</code></div>
+                <p>注册用户。注册成功后直接返回 JWT。</p>
+                <h3>请求体</h3>
+                <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>username</code></td><td>string</td><td>是</td><td>用户名</td></tr><tr><td><code>password</code></td><td>string</td><td>是</td><td>密码</td></tr></table>
+                <h3>成功响应</h3>
+                <pre><code>{
+  "data": { "user": { "id": "1", "username": "zhangsan" }, "token": "jwt-token" },
+  "error": null
+}</code></pre>
+                <h3>错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>400</td><td><code>INVALID_REQUEST</code></td><td>请求参数不合法</td></tr><tr><td>409</td><td><code>USERNAME_EXISTS</code></td><td>用户名已存在</td></tr></table>
+            </section>
+            <section id="login">
+                <div class="endpoint"><span class="method">POST</span><code>/api/auth/login</code></div>
+                <p>使用用户名和密码登录。登录成功后返回新的 JWT。</p>
+                <h3>请求体</h3>
+                <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>username</code></td><td>string</td><td>是</td><td>用户名</td></tr><tr><td><code>password</code></td><td>string</td><td>是</td><td>密码</td></tr></table>
+                <h3>错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>400</td><td><code>INVALID_REQUEST</code></td><td>请求参数不合法</td></tr><tr><td>401</td><td><code>INVALID_CREDENTIALS</code></td><td>用户名或密码错误</td></tr><tr><td>403</td><td><code>USER_DISABLED</code></td><td>用户已被禁用</td></tr></table>
+            </section>
+            <section id="me">
+                <div class="endpoint"><span class="method">GET</span><code>/api/auth/me</code></div>
+                <p>通过 <code>Authorization: Bearer &lt;token&gt;</code> 恢复当前登录用户身份。</p>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "user": { "id": "1", "username": "zhangsan" } }, "error": null }</code></pre>
+                <h3>错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>401</td><td><code>UNAUTHORIZED</code></td><td>未登录、token 无效、token 已过期或 token 已吊销</td></tr><tr><td>403</td><td><code>USER_DISABLED</code></td><td>用户已被禁用</td></tr></table>
+            </section>
+            <section id="logout">
+                <div class="endpoint"><span class="method">POST</span><code>/api/auth/logout</code></div>
+                <p>退出登录。服务端将当前 JWT 的 <code>jti</code> 写入吊销记录。</p>
+                <h3>成功响应</h3>
+                <pre><code>{ "data": { "success": true }, "error": null }</code></pre>
+                <h3>错误响应</h3>
+                <table><tr><th>HTTP</th><th>错误码</th><th>说明</th></tr><tr><td>401</td><td><code>UNAUTHORIZED</code></td><td>未登录、token 无效或 token 已过期</td></tr></table>
+            </section>
+        </div>
+    </main>
+    <script>
+        const links = [...document.querySelectorAll("nav a[href^='#']")];
+        const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+        const setActive = (id) => {
+            links.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${id}`));
+        };
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries.filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) setActive(visible.target.id);
+        }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.3, 0.6] });
+        sections.forEach((section) => observer.observe(section));
+        setActive(sections[0]?.id);
+    </script>
+</body>
+</html>
