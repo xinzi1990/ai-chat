@@ -2,20 +2,23 @@ import { Typography } from "antd";
 import { ChatComposer } from "@/components/ChatComposer";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatSidebar } from "@/components/ChatSidebar";
-import type { ChatMessageItem, ChatSessionSummary } from "@/pages/DashboardPage";
+import type { ChatMessage, ChatSession } from "@/api/chat";
 
 type ChatLayoutProps = {
-    activeSession: ChatSessionSummary | null;
+    activeSession: ChatSession | null;
     error: string | null;
     loadingMessages: boolean;
     loadingSessions: boolean;
-    messages: ChatMessageItem[];
+    logoutLoading: boolean;
+    messages: ChatMessage[];
+    onDeleteSession: (sessionId: string) => Promise<void>;
+    onEditSession: (sessionId: string, title: string) => Promise<void>;
     onLogout: () => Promise<void>;
     onNewSession: () => void;
     onSelectSession: (sessionId: string) => void;
     onSendMessage: (content: string) => void;
     sending: boolean;
-    sessions: ChatSessionSummary[];
+    sessions: ChatSession[];
     username: string;
 };
 
@@ -24,7 +27,10 @@ export function ChatLayout({
     error,
     loadingMessages,
     loadingSessions,
+    logoutLoading,
     messages,
+    onDeleteSession,
+    onEditSession,
     onLogout,
     onNewSession,
     onSelectSession,
@@ -38,6 +44,9 @@ export function ChatLayout({
             <ChatSidebar
                 activeSessionId={activeSession?.id ?? null}
                 loading={loadingSessions}
+                logoutLoading={logoutLoading}
+                onDeleteSession={onDeleteSession}
+                onEditSession={onEditSession}
                 onLogout={onLogout}
                 onNewSession={onNewSession}
                 onSelectSession={onSelectSession}

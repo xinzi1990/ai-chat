@@ -19,4 +19,4 @@ chatRouter.post("/sessions", createSessionController);
 chatRouter.patch("/sessions/:sessionId", updateSessionController);
 chatRouter.delete("/sessions/:sessionId", deleteSessionController);
 chatRouter.get("/sessions/:sessionId/messages", listMessagesController);
-chatRouter.post("/messages", sendMessageController);
+chatRouter.post("/stream", sendMessageController);

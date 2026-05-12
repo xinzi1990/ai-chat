@@ -9,6 +9,7 @@ type ChatComposerProps = {
 
 export function ChatComposer({ disabled, loading, onSend }: ChatComposerProps) {
     const [value, setValue] = useState("");
+    const submitDisabled = disabled || loading || !value.trim();
 
     const submit = () => {
         const content = value.trim();
@@ -22,29 +23,39 @@ export function ChatComposer({ disabled, loading, onSend }: ChatComposerProps) {
 
     return (
         <footer className="chat-composer">
-            <Input.TextArea
-                autoSize={{ minRows: 2, maxRows: 5 }}
-                disabled={disabled || loading}
-                maxLength={4000}
-                onChange={(event) => setValue(event.target.value)}
-                onPressEnter={(event) => {
-                    if (!event.shiftKey) {
-                        event.preventDefault();
-                        submit();
-                    }
-                }}
-                placeholder="输入消息，Enter 发送，Shift + Enter 换行"
-                showCount
-                value={value}
-            />
-            <Button
-                disabled={disabled || !value.trim()}
-                loading={loading}
-                onClick={submit}
-                type="primary"
-            >
-                发送
-            </Button>
+            <div className="chat-composer__box">
+                <Input.TextArea
+                    autoSize={{ minRows: 2, maxRows: 5 }}
+                    bordered={false}
+                    className="chat-composer__input"
+                    disabled={disabled || loading}
+                    maxLength={4000}
+                    onChange={(event) => setValue(event.target.value)}
+                    onPressEnter={(event) => {
+                        if (!event.shiftKey) {
+                            event.preventDefault();
+                            submit();
+                        }
+                    }}
+                    placeholder="发消息..."
+                    value={value}
+                />
+                <div className="chat-composer__bar">
+                    <span className="chat-composer__hint">
+                        Enter 发送，Shift + Enter 换行
+                    </span>
+                    <Button
+                        className="chat-composer__send"
+                        disabled={submitDisabled}
+                        loading={loading}
+                        onClick={submit}
+                        shape="circle"
+                        type="primary"
+                    >
+                        ↑
+                    </Button>
+                </div>
+            </div>
         </footer>
     );
 }

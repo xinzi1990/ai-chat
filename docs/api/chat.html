@@ -142,7 +142,7 @@
                 <pre><code>{ "data": { "session": ChatSession, "items": [ChatMessage], "hasMore": false }, "error": null }</code></pre>
             </section>
             <section id="send">
-                <div class="endpoint"><span class="method">POST</span><code>/api/chat/messages</code></div>
+                <div class="endpoint"><span class="method">POST</span><code>/api/chat/stream</code></div>
                 <p>发送用户消息并通过 SSE 流式生成 AI 回复。<code>sessionId</code> 为空时服务端自动创建新会话。</p>
                 <h3>请求体</h3>
                 <table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td><code>sessionId</code></td><td>string</td><td>否</td><td>会话 ID</td></tr><tr><td><code>content</code></td><td>string</td><td>是</td><td>用户消息内容，最大 4000 字符</td></tr></table>

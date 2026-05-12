@@ -146,7 +146,7 @@ Authorization: Bearer <token>
 
 ## `POST /api/chat/sessions`
 
-创建一个空聊天会话。也可以不调用该接口，直接通过 `POST /api/chat/messages` 发送首条消息并自动创建会话。
+创建一个空聊天会话。也可以不调用该接口，直接通过 `POST /api/chat/stream` 发送首条消息并自动创建会话。
 
 ### 请求头
 
@@ -368,7 +368,7 @@ Authorization: Bearer <token>
 | `403`       | `USER_DISABLED`          | 用户已被禁用               |
 | `404`       | `CHAT_SESSION_NOT_FOUND` | 会话不存在或不属于当前用户 |
 
-## `POST /api/chat/messages`
+## `POST /api/chat/stream`
 
 发送用户消息并通过 SSE 流式生成 AI 回复。`sessionId` 为空时，服务端自动创建新会话；`sessionId` 存在时，消息追加到指定会话。
 

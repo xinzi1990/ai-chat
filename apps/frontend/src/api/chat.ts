@@ -167,7 +167,7 @@ export async function sendChatMessageStream(
     body: SendChatMessageRequest,
     options: SendChatMessageStreamOptions = {},
 ) {
-    const response = await fetch(`${API_BASE_URL}/api/chat/messages`, {
+    const response = await fetch(`${API_BASE_URL}/api/chat/stream`, {
         method: "POST",
         headers: buildStreamHeaders(options.token ?? getStoredToken()),
         body: JSON.stringify(body),

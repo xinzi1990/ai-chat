@@ -13,10 +13,10 @@ Node.js + Express + TypeScript 后端服务，使用 `mysql2` 连接 MySQL，提
 - `src/config/ai.ts`：AI 服务配置，读取 `AI_PROVIDER`、`OPENAI_API_KEY`、`OPENAI_MODEL` 和 `OPENAI_BASE_URL`。
 - `src/config/env.ts`：加载本地 `.env` 与 `.env.example`，未设置 `.env` 时使用示例开发配置。
 - `src/config/auth.ts`：JWT 密钥与有效期配置。
-- `src/db/pool.ts`：MySQL 连接池配置，读取环境变量创建 `mysql2/promise` pool。
+- `src/db/pool.ts`：MySQL 连接池配置，读取环境变量创建 `mysql2/promise` pool，并按 UTC 解析 MySQL `DATETIME`。
 - `src/db/schema.ts`：用户认证和聊天相关 MySQL 表结构定义。
 - `src/db/migrate.ts`：本地数据库初始化/迁移脚本，创建用户、JWT 吊销、聊天会话和聊天消息表。
-- `src/http/`：统一 `{ data, error }` 响应、API 错误类型和 CORS 中间件。
+- `src/http/`：统一 `{ data, error }` 响应、API 错误类型和 CORS 中间件，允许前端访问聊天查询、发送、编辑和删除接口。
 - `src/store/database-example.ts`：数据库连通性示例代码。
 - `tests/e2e/`：后端 HTTP + MySQL e2e 测试，覆盖健康检查、认证闭环和聊天接口。
 - `tests/helpers/`：e2e 测试数据库初始化、清理和请求构造工具。
@@ -121,6 +121,6 @@ pnpm --filter @ai-chat/backend test:e2e
 - `PATCH /api/chat/sessions/:sessionId`：更新会话标题或归档状态。
 - `DELETE /api/chat/sessions/:sessionId`：删除会话及其消息。
 - `GET /api/chat/sessions/:sessionId/messages`：查询指定会话的历史消息。
-- `POST /api/chat/messages`：发送用户消息，读取当前会话已完成历史消息作为上下文，并通过 SSE 返回助手回复。
+- `POST /api/chat/stream`：发送用户消息，读取当前会话已完成历史消息作为上下文，并通过 SSE 返回助手回复。
 
 业务接口统一响应 `{ data, error }`，全局规范见 `../../docs/API-DOC.md`，认证错误码和状态码见 `../../docs/api/auth.md`。

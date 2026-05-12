@@ -56,7 +56,7 @@ const sendMessage = async (
     body: Record<string, unknown>
 ) => {
     const response = await api
-        .post("/api/chat/messages")
+        .post("/api/chat/stream")
         .set("Authorization", `Bearer ${token}`)
         .set("Accept", "text/event-stream")
         .send(body);
@@ -260,7 +260,7 @@ describe("chat e2e", () => {
             .send({ status: "archived" });
 
         const response = await api
-            .post("/api/chat/messages")
+            .post("/api/chat/stream")
             .set("Authorization", `Bearer ${token}`)
             .send({ sessionId, content: "继续聊" });
 
@@ -274,7 +274,7 @@ describe("chat e2e", () => {
     it("rejects overlong messages", async () => {
         const { token } = await registerUser();
         const response = await api
-            .post("/api/chat/messages")
+            .post("/api/chat/stream")
             .set("Authorization", `Bearer ${token}`)
             .send({ content: "a".repeat(4001) });
 

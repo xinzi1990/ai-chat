@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 type MarkdownContentProps = {
     content: string;
+    showCursor?: boolean;
 };
 
 function renderInline(text: string): ReactNode[] {
@@ -20,7 +21,7 @@ function renderInline(text: string): ReactNode[] {
     });
 }
 
-export function MarkdownContent({ content }: MarkdownContentProps) {
+export function MarkdownContent({ content, showCursor = false }: MarkdownContentProps) {
     const blocks: ReactNode[] = [];
     const lines = content.split("\n");
     let codeLines: string[] = [];
@@ -97,5 +98,15 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
     }
     flushList();
 
-    return <div className="chat-markdown">{blocks}</div>;
+    return (
+        <div
+            className={
+                showCursor
+                    ? "chat-markdown chat-markdown--streaming"
+                    : "chat-markdown"
+            }
+        >
+            {blocks}
+        </div>
+    );
 }

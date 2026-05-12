@@ -1,0 +1,29 @@
+.chat-streaming {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: #68748a;
+}
+
+.chat-markdown--streaming > :last-child::after,
+.chat-markdown--streaming > ul:last-child li:last-child::after {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: -0.12em;
+  background: #1677ff;
+  border-radius: 1px;
+  content: "";
+  animation: chat-cursor-blink 1s steps(2, start) infinite;
+}
+
+.chat-markdown--streaming > ul:last-child::after {
+  display: none;
+}
+
+@keyframes chat-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}

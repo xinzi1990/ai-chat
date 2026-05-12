@@ -1,20 +1,15 @@
 import { Alert, Empty, Skeleton, Spin, Typography } from "antd";
+import { useEffect, useMemo, useRef } from "react";
 import { MarkdownContent } from "@/components/MarkdownContent";
-import type { ChatMessageItem } from "@/pages/DashboardPage";
+import type { ChatMessage } from "@/api/chat";
+import { formatChatTime } from "@/utils/dateTime";
 
 type ChatMessagesProps = {
     error: string | null;
     loading: boolean;
-    messages: ChatMessageItem[];
+    messages: ChatMessage[];
     sending: boolean;
 };
-
-function formatMessageTime(value: string) {
-    return new Intl.DateTimeFormat("zh-CN", {
-        hour: "2-digit",
-        minute: "2-digit",
-    }).format(new Date(value));
-}
 
 export function ChatMessages({
     error,
@@ -22,6 +17,21 @@ export function ChatMessages({
     messages,
     sending,
 }: ChatMessagesProps) {
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+    const streamingMessageId = sending
+        ? [...messages].reverse().find((message) =>
+            message.id.startsWith("streaming-"),
+        )?.id
+        : null;
+    const scrollKey = useMemo(
+        () => messages.map((message) => `${message.id}:${message.content}`).join("|"),
+        [messages],
+    );
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ block: "end" });
+    }, [scrollKey, sending]);
+
     if (loading) {
         return (
             <div className="chat-messages chat-messages--state">
@@ -62,12 +72,15 @@ export function ChatMessages({
                             {message.role === "user" ? "你" : "AI"}
                         </Typography.Text>
                         <Typography.Text type="secondary">
-                            {formatMessageTime(message.createdAt)}
+                            {formatChatTime(message.createdAt)}
                         </Typography.Text>
                     </div>
                     <div className="chat-message__bubble">
                         {message.role === "assistant" ? (
-                            <MarkdownContent content={message.content} />
+                            <MarkdownContent
+                                content={message.content}
+                                showCursor={message.id === streamingMessageId}
+                            />
                         ) : (
                             <p>{message.content}</p>
                         )}
@@ -83,6 +96,7 @@ export function ChatMessages({
                     <span>AI 正在回复</span>
                 </div>
             ) : null}
+            <div ref={bottomRef} />
         </div>
     );
 }
