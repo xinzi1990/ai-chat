@@ -37,9 +37,11 @@ export const setupTestDatabase = async () => {
             `CREATE DATABASE IF NOT EXISTS ${quoteIdentifier(databaseName)}
        CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
         );
-        await connection.query(
-            `GRANT ALL PRIVILEGES ON ${quoteIdentifier(databaseName)}.* TO ${quoteLiteral(appUser)}@'%'`
-        );
+        if (appUser !== "root") {
+            await connection.query(
+                `GRANT ALL PRIVILEGES ON ${quoteIdentifier(databaseName)}.* TO ${quoteLiteral(appUser)}@'%'`
+            );
+        }
     } finally {
         await connection.end();
     }
