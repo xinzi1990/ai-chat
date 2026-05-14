@@ -22,6 +22,7 @@ session UI described in `../../docs/api/chat.md`.
 - `src/store/useAuth.ts`: local authentication state, startup restore, and logout handling.
 - `src/store/useChat.ts`: chat session list, active messages, local new-chat state, title editing, deletion and stream state.
 - `src/pages/DashboardPage.tsx`: authenticated chat page entry.
+- `src/components/ChatComposer.tsx`: chat input and send flow.
 
 ## Source Directories
 
