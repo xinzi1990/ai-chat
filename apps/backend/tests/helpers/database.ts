@@ -25,6 +25,7 @@ const quoteLiteral = (value: string) =>
 export const setupTestDatabase = async () => {
     const databaseName = assertE2eDatabase();
     const appUser = process.env.MYSQL_USER ?? "root";
+    const appPassword = process.env.MYSQL_PASSWORD ?? "";
     const connection = await mysql.createConnection({
         host: process.env.MYSQL_HOST ?? "127.0.0.1",
         port: Number(process.env.MYSQL_PORT ?? 3306),
@@ -38,6 +39,9 @@ export const setupTestDatabase = async () => {
        CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
         );
         if (appUser !== "root") {
+            await connection.query(
+                `CREATE USER IF NOT EXISTS ${quoteLiteral(appUser)}@'%' IDENTIFIED WITH mysql_native_password BY ${quoteLiteral(appPassword)}`
+            );
             await connection.query(
                 `GRANT ALL PRIVILEGES ON ${quoteIdentifier(databaseName)}.* TO ${quoteLiteral(appUser)}@'%'`
             );
