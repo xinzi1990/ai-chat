@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Publish frontend build output
 
 on:
   push:
@@ -14,11 +14,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -37,18 +39,13 @@ jobs:
       - name: Build frontend
         run: pnpm --filter @ai-chat/frontend build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish dist to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./apps/frontend/dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./apps/frontend/dist
+          publish_branch: gh-pages
+          allow_empty_commit: true
+          commit_message: "chore: publish frontend build output from main"
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
