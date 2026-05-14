@@ -45,6 +45,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./apps/frontend/dist
           publish_branch: gh-pages
+          clean: true
           allow_empty_commit: true
           commit_message: "chore: publish frontend build output from main"
           user_name: github-actions[bot]
